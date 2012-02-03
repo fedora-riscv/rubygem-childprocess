@@ -1,27 +1,26 @@
-%global gemname childprocess
+%global gem_name childprocess
 
-%global gemdir %(ruby -rubygems -e 'puts Gem::dir' 2>/dev/null)
-%global geminstdir %{gemdir}/gems/%{gemname}-%{version}
-%global rubyabi 1.8
+%global rubyabi 1.9.1
 
 Summary: A simple and reliable gem for controlling external programs
-Name: rubygem-%{gemname}
+Name: rubygem-%{gem_name}
 Version: 0.2.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
-Source0: http://rubygems.org/gems/%{gemname}-%{version}.gem
+Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
 Requires: ruby(abi) = %{rubyabi}
 Requires: ruby(rubygems)
 Requires: ruby
 Requires: rubygem(ffi) => 1.0.6
 Requires: rubygem(ffi) < 1.1
 BuildRequires: ruby(abi) = %{rubyabi}
-BuildRequires: ruby(rubygems)
+BuildRequires: rubygems-devel
 BuildRequires: ruby
+BuildRequires: rubygem(rspec-core)
 BuildArch: noarch
-Provides: rubygem(%{gemname}) = %{version}
+Provides: rubygem(%{gem_name}) = %{version}
 
 %description
 This gem aims at being a simple and reliable solution for controlling external
@@ -40,37 +39,45 @@ Documentation for %{name}
 
 %prep
 %setup -q -c -T
-mkdir -p .%{gemdir}
-gem install --local --install-dir .%{gemdir} --force %{SOURCE0}
+mkdir -p .%{gem_dir}
+gem install --local --install-dir .%{gem_dir} --force %{SOURCE0}
 
 %build
 
 %install
-mkdir -p %{buildroot}%{gemdir}
-cp -a .%{gemdir}/* %{buildroot}%{gemdir}/
-rm -f %{buildroot}%{geminstdir}/.document %{buildroot}%{geminstdir}/.gitignore
-rm -f %{buildroot}%{geminstdir}/.rspec %{buildroot}%{geminstdir}/Rakefile
-rm -f %{buildroot}%{geminstdir}/childprocess.gemspec
-rm -f %{buildroot}%{geminstdir}/Gemfile
-chmod 644 %{buildroot}%{geminstdir}/lib/childprocess/jruby/process.rb
-chmod 644 %{buildroot}%{geminstdir}/lib/childprocess/windows/process.rb
-chmod 644 %{buildroot}%{geminstdir}/spec/*.rb
+mkdir -p %{buildroot}%{gem_dir}
+cp -a .%{gem_dir}/* %{buildroot}%{gem_dir}/
+rm -f %{buildroot}%{gem_instdir}/.document %{buildroot}%{gem_instdir}/.gitignore
+rm -f %{buildroot}%{gem_instdir}/.rspec %{buildroot}%{gem_instdir}/Rakefile
+rm -f %{buildroot}%{gem_instdir}/childprocess.gemspec
+rm -f %{buildroot}%{gem_instdir}/Gemfile
+chmod 644 %{buildroot}%{gem_libdir}/childprocess/jruby/process.rb
+chmod 644 %{buildroot}%{gem_libdir}/childprocess/windows/process.rb
+chmod 644 %{buildroot}%{gem_instdir}/spec/*.rb
+
+%check
+pushd .%{gem_instdir}
+rspec spec
+popd
 
 
 %files
-%dir %{geminstdir}
-%doc %{geminstdir}/LICENSE
-%doc %{geminstdir}/README.md
-%{geminstdir}/lib
-%{gemdir}/cache/%{gemname}-%{version}.gem
-%{gemdir}/specifications/%{gemname}-%{version}.gemspec
+%dir %{gem_instdir}
+%doc %{gem_instdir}/LICENSE
+%doc %{gem_instdir}/README.md
+%{gem_libdir}
+%{gem_cache}
+%{gem_spec}
 
 %files doc
-%doc %{gemdir}/doc/%{gemname}-%{version}
-%doc %{geminstdir}/spec
+%doc %{gem_docdir}
+%doc %{gem_instdir}/spec
 
 
 %changelog
+* Fri Feb 03 2012 Vít Ondruch <vondruch@redhat.com> - 0.2.0-3
+- Rebuilt for Ruby 1.9.3.
+
 * Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
