@@ -4,8 +4,8 @@
 
 Summary: A simple and reliable gem for controlling external programs
 Name: rubygem-%{gem_name}
-Version: 0.2.0
-Release: 4%{?dist}
+Version: 0.3.6
+Release: 1%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
@@ -18,7 +18,7 @@ Requires: rubygem(ffi) < 1.1
 BuildRequires: ruby(abi) = %{rubyabi}
 BuildRequires: rubygems-devel
 BuildRequires: ruby
-BuildRequires: rubygem(rspec-core)
+BuildRequires: rubygem(rspec)
 BuildArch: noarch
 Provides: rubygem(%{gem_name}) = %{version}
 
@@ -49,6 +49,7 @@ mkdir -p %{buildroot}%{gem_dir}
 cp -a .%{gem_dir}/* %{buildroot}%{gem_dir}/
 rm -f %{buildroot}%{gem_instdir}/.document %{buildroot}%{gem_instdir}/.gitignore
 rm -f %{buildroot}%{gem_instdir}/.rspec %{buildroot}%{gem_instdir}/Rakefile
+rm -f %{buildroot}%{gem_instdir}/.travis.yml
 rm -f %{buildroot}%{gem_instdir}/childprocess.gemspec
 rm -f %{buildroot}%{gem_instdir}/Gemfile
 chmod 644 %{buildroot}%{gem_libdir}/childprocess/jruby/process.rb
@@ -75,6 +76,9 @@ popd
 
 
 %changelog
+* Tue Nov 13 2012 Mo Morsi <mmorsi@redhat.com> - 0.3.6-1
+- Update to childprocess 0.3.6
+
 * Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
