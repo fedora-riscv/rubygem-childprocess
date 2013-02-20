@@ -1,21 +1,20 @@
 %global gem_name childprocess
 
-%global rubyabi 1.9.1
 
 Summary: A simple and reliable gem for controlling external programs
 Name: rubygem-%{gem_name}
 Version: 0.3.6
-Release: 2%{?dist}
+Release: 3%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
 Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
-Requires: ruby(abi) = %{rubyabi}
+Requires: ruby(release)
 Requires: ruby(rubygems)
 Requires: ruby
 Requires: rubygem(ffi) => 1.0.6
-Requires: rubygem(ffi) < 1.1
-BuildRequires: ruby(abi) = %{rubyabi}
+Requires: rubygem(ffi) < 2
+BuildRequires: ruby(release)
 BuildRequires: rubygems-devel
 BuildRequires: ruby
 BuildRequires: rubygem(rspec)
@@ -39,8 +38,7 @@ Documentation for %{name}
 
 %prep
 %setup -q -c -T
-mkdir -p .%{gem_dir}
-gem install --local --install-dir .%{gem_dir} --force %{SOURCE0}
+%gem_install -n %{SOURCE0}
 
 %build
 
@@ -76,6 +74,9 @@ popd
 
 
 %changelog
+* Wed Feb 20 2013 Vít Ondruch <vondruch@redhat.com> - 0.3.6-3
+- Rebuild for https://fedoraproject.org/wiki/Features/Ruby_2.0.0
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
