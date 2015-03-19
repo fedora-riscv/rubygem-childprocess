@@ -3,23 +3,16 @@
 
 Summary: A simple and reliable gem for controlling external programs
 Name: rubygem-%{gem_name}
-Version: 0.3.9
-Release: 3%{?dist}
+Version: 0.5.3
+Release: 1%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
 Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
-Requires: ruby(release)
-Requires: ruby(rubygems)
-Requires: ruby
-Requires: rubygem(ffi) => 1.0.6
-Requires: rubygem(ffi) < 2
-BuildRequires: ruby(release)
 BuildRequires: rubygems-devel
-BuildRequires: ruby
-BuildRequires: rubygem(rspec)
+BuildRequires: rubygem(rspec) >= 2.0.0
+BuildRequires: rubygem(coveralls)
 BuildArch: noarch
-Provides: rubygem(%{gem_name}) = %{version}
 
 %description
 This gem aims at being a simple and reliable solution for controlling external
@@ -61,21 +54,22 @@ popd
 
 
 %files
-%dir %{gem_instdir}
 %doc %{gem_instdir}/LICENSE
-%doc %{gem_instdir}/README.md
 %{gem_libdir}
+%dir %{gem_instdir}
 %{gem_cache}
 %{gem_spec}
 
+
 %files doc
-%doc %{gem_docdir}
-%doc %{gem_instdir}/spec
+%doc %{gem_instdir}/README.md
+%{gem_instdir}/spec
+%doc %doc %{gem_docdir}
 
 
 %changelog
-* Thu Dec 18 2014 Troy Dawson <tdawson@redhat.com> - 0.3.9-3
-- Release bump to build for EPEL7
+* Thu Aug 28 2014 Josef Stribny <jstribny@redhat.com> - 0.5.3-1
+- Update childprocess to version 0.5.3
 
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.9-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
