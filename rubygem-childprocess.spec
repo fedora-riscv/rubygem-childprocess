@@ -9,10 +9,15 @@ Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
 Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
+Requires: ruby(release)
+Requires: ruby(rubygems)
+Requires: rubygem(ffi) => 1.0.11
+Requires: rubygem(ffi) < 2
 BuildRequires: rubygems-devel
 BuildRequires: rubygem(rspec) >= 2.0.0
 BuildRequires: rubygem(coveralls)
 BuildArch: noarch
+Provides: rubygem(%{gem_name}) = %{version}
 
 %description
 This gem aims at being a simple and reliable solution for controlling external
