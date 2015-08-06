@@ -4,14 +4,14 @@
 Summary: A simple and reliable gem for controlling external programs
 Name: rubygem-%{gem_name}
 Version: 0.5.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
 Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
 BuildRequires: rubygems-devel
 BuildRequires: rubygem(rspec) >= 2.0.0
-BuildRequires: rubygem(coveralls)
+#BuildRequires: rubygem(coveralls)
 BuildArch: noarch
 
 %description
@@ -49,7 +49,9 @@ chmod 644 %{buildroot}%{gem_instdir}/spec/*.rb
 
 %check
 pushd .%{gem_instdir}
-rspec spec
+# Get rid of coverall dependency
+sed -i -e '5,6d' spec/spec_helper.rb
+rspec2 spec
 popd
 
 
@@ -68,6 +70,9 @@ popd
 
 
 %changelog
+* Thu Aug 06 2015 Josef Stribny <jstribny@redhat.com> - 0.5.3-3
+- Fix FTBFS: Run tests with RSpec2 bin
+
 * Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.5.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
