@@ -4,13 +4,13 @@
 Summary: A simple and reliable gem for controlling external programs
 Name: rubygem-%{gem_name}
 Version: 0.5.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
 Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
 BuildRequires: rubygems-devel
-BuildRequires: rubygem(rspec) >= 2.0.0
+BuildRequires: rubygem(rspec2)
 #BuildRequires: rubygem(coveralls)
 BuildArch: noarch
 
@@ -70,6 +70,9 @@ popd
 
 
 %changelog
+* Tue Mar 01 2016 Yaakov Selkowitz <yselkowi@redhat.com> - 0.5.3-5
+- BR: rubygem-rspec2 (#1308012)
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.3-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
