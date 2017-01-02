@@ -3,14 +3,14 @@
 
 Summary: A simple and reliable gem for controlling external programs
 Name: rubygem-%{gem_name}
-Version: 0.5.3
-Release: 5%{?dist}
+Version: 0.5.9
+Release: 1%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
 Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
 BuildRequires: rubygems-devel
-BuildRequires: rubygem(rspec2)
+BuildRequires: rubygem(rspec) >= 3
 #BuildRequires: rubygem(coveralls)
 BuildArch: noarch
 
@@ -51,7 +51,7 @@ chmod 644 %{buildroot}%{gem_instdir}/spec/*.rb
 pushd .%{gem_instdir}
 # Get rid of coverall dependency
 sed -i -e '5,6d' spec/spec_helper.rb
-rspec2 spec
+rspec spec
 popd
 
 
@@ -70,6 +70,9 @@ popd
 
 
 %changelog
+* Mon Jan  2 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 0.5.9-1
+- 0.5.9
+
 * Tue Mar 01 2016 Yaakov Selkowitz <yselkowi@redhat.com> - 0.5.3-5
 - BR: rubygem-rspec2 (#1308012)
 
