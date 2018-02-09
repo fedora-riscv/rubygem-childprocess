@@ -4,7 +4,7 @@
 Summary: A simple and reliable gem for controlling external programs
 Name: rubygem-%{gem_name}
 Version: 0.5.9
-Release: 3%{?dist}
+Release: 4%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://github.com/jarib/childprocess
@@ -70,6 +70,9 @@ popd
 
 
 %changelog
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.9-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.9-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
