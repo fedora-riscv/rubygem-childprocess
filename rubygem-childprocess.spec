@@ -1,16 +1,19 @@
 %global gem_name childprocess
 
-
-Summary: A simple and reliable gem for controlling external programs
 Name: rubygem-%{gem_name}
-Version: 0.5.9
-Release: 6%{?dist}
+Version: 1.0.1
+Release: 1%{?dist}
+Summary: A gem for controlling external programs running in the background
 License: MIT
-URL: http://github.com/jarib/childprocess
-Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
+URL: http://github.com/enkessler/childprocess
+Source0: https://rubygems.org/gems/%{gem_name}-%{version}.gem
+# Fix Ruby 2.6 compatibility.
+# https://github.com/enkessler/childprocess/pull/149
+Patch0: rubygem-childprocess-1.0.1-Rewrite-unix-fork-reopen-to-be-compatible-with-ruby-2.6.patch
+BuildRequires: ruby(release)
 BuildRequires: rubygems-devel
+BuildRequires: rubygem(ffi)
 BuildRequires: rubygem(rspec) >= 3
-#BuildRequires: rubygem(coveralls)
 BuildArch: noarch
 
 %description
@@ -24,50 +27,70 @@ Requires: %{name} = %{version}-%{release}
 BuildArch: noarch
 
 %description doc
-Documentation for %{name}
-
+Documentation for %{name}.
 
 %prep
-%setup -q -c -T
-%gem_install -n %{SOURCE0}
+%setup -q -n %{gem_name}-%{version}
+
+%patch0 -p1
+
+# Disable windows specific installation of FFI gem.
+sed -i "/extensions/ s/^/#/" ../%{gem_name}-%{version}.gemspec
+%gemspec_remove_file "ext/mkrf_conf.rb"
 
 %build
+# Create the gem as gem install only works on a gem file
+gem build ../%{gem_name}-%{version}.gemspec
+
+# %%gem_install compiles any C extensions and installs the gem into ./%%gem_dir
+# by default, so that we can move it into the buildroot in %%install
+%gem_install
 
 %install
 mkdir -p %{buildroot}%{gem_dir}
-cp -a .%{gem_dir}/* %{buildroot}%{gem_dir}/
-rm -f %{buildroot}%{gem_instdir}/.document %{buildroot}%{gem_instdir}/.gitignore
-rm -f %{buildroot}%{gem_instdir}/.rspec %{buildroot}%{gem_instdir}/Rakefile
-rm -f %{buildroot}%{gem_instdir}/.travis.yml
-rm -f %{buildroot}%{gem_instdir}/childprocess.gemspec
-rm -f %{buildroot}%{gem_instdir}/Gemfile
-chmod 644 %{buildroot}%{gem_libdir}/childprocess/jruby/process.rb
-chmod 644 %{buildroot}%{gem_libdir}/childprocess/windows/process.rb
-chmod 644 %{buildroot}%{gem_instdir}/spec/*.rb
+cp -a .%{gem_dir}/* \
+        %{buildroot}%{gem_dir}/
 
 %check
 pushd .%{gem_instdir}
-# Get rid of coverall dependency
-sed -i -e '5,6d' spec/spec_helper.rb
-rspec spec
+# We don't care about code coverage.
+sed -i '/[cC]overalls/ s/^/#/' spec/spec_helper.rb
+
+# Disable validity of .gemspec check, since it requires Git and it is not super
+# important.
+sed -i "/gemspec.validate/ s/^/#/" spec/childprocess_spec.rb
+
+# We need Unicode support to pass "ChildProcess allows unicode characters
+# in the environment" test case.
+LC_ALL=C.UTF-8 RUBYOPT=-Ilib rspec spec
+
+# Test also posix_spawn, which requires FFI.
+CHILDPROCESS_POSIX_SPAWN=true LC_ALL=C.UTF-8 RUBYOPT=-Ilib rspec spec
 popd
 
-
 %files
-%doc %{gem_instdir}/LICENSE
-%{gem_libdir}
 %dir %{gem_instdir}
+%exclude %{gem_instdir}/.*
+%license %{gem_instdir}/LICENSE
+%{gem_libdir}
 %{gem_cache}
 %{gem_spec}
 
 
 %files doc
+%doc %{gem_docdir}
+%doc %{gem_instdir}/CHANGELOG.md
+%{gem_instdir}/Gemfile
 %doc %{gem_instdir}/README.md
+%{gem_instdir}/Rakefile
+%{gem_instdir}/appveyor.yml
+%{gem_instdir}/childprocess.gemspec
 %{gem_instdir}/spec
-%doc %doc %{gem_docdir}
-
 
 %changelog
+* Wed Jun 05 2019 Vít Ondruch <vondruch@redhat.com> - 1.0.1-1
+- Update to childprocess 1.0.1.
+
 * Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.9-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 

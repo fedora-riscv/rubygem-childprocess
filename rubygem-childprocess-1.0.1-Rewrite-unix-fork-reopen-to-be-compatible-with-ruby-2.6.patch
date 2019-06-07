@@ -1,0 +1,49 @@
+From 21973e113d4e2f6ad603184609f253af27fd1521 Mon Sep 17 00:00:00 2001
+From: Hans de Graaff <hans@degraaff.org>
+Date: Mon, 29 Apr 2019 18:41:35 +0200
+Subject: [PATCH] Rewrite unix fork reopen to be compatible with ruby 2.6
+
+On ruby 2.6 the original code would fail specs:
+
+lib/childprocess/unix/fork_exec_process.rb:32:in `reopen': exclusive
+access mode is not supported (ArgumentError)
+
+The documentation for reopen shows that it has two ways to call it:
+
+  reopen(other_IO) -> ios
+  reopen(path, mode [,opt]) -> ios
+
+With ruby 2.4 and 2.5 calling reopen with a path and no mode seems to
+work fine, but with ruby 2.6 this triggers the spec failure.
+
+This commit splits the calls based on stdout/stderr availability so
+that both types of reopen calls can get the required parameters. This
+fixes the 2.6 specs while being backward compatible with ruby 2.4 and
+2.5.
+---
+ lib/childprocess/unix/fork_exec_process.rb | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/lib/childprocess/unix/fork_exec_process.rb b/lib/childprocess/unix/fork_exec_process.rb
+index 5ed2a79..cc7a850 100644
+--- a/lib/childprocess/unix/fork_exec_process.rb
++++ b/lib/childprocess/unix/fork_exec_process.rb
+@@ -29,8 +29,16 @@ def launch_process
+           exec_r.close
+           set_env
+ 
+-          STDOUT.reopen(stdout || "/dev/null")
+-          STDERR.reopen(stderr || "/dev/null")
++          if stdout
++            STDOUT.reopen(stdout)
++          else
++            STDOUT.reopen("/dev/null", "a+")
++          end
++          if stderr
++            STDERR.reopen(stderr)
++          else
++            STDERR.reopen("/dev/null", "a+")
++          end
+ 
+           if duplex?
+             STDIN.reopen(reader)
