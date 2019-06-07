@@ -2,7 +2,7 @@
 
 Name: rubygem-%{gem_name}
 Version: 1.0.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A gem for controlling external programs running in the background
 License: MIT
 URL: http://github.com/enkessler/childprocess
@@ -15,6 +15,7 @@ BuildRequires: rubygems-devel
 BuildRequires: rubygem(ffi)
 BuildRequires: rubygem(rspec) >= 3
 BuildArch: noarch
+ExclusiveArch: %{ix86} x86_64 noarch
 
 %description
 This gem aims at being a simple and reliable solution for controlling external
@@ -88,6 +89,9 @@ popd
 %{gem_instdir}/spec
 
 %changelog
+* Fri Jun 07 2019 Vít Ondruch <vondruch@redhat.com> - 1.0.1-2
+- posix_spaw is not implemented everywhere, use just Intel for build.
+
 * Wed Jun 05 2019 Vít Ondruch <vondruch@redhat.com> - 1.0.1-1
 - Update to childprocess 1.0.1.
 
