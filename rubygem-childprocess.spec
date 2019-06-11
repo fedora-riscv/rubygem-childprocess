@@ -15,6 +15,7 @@ BuildRequires: rubygems-devel
 BuildRequires: rubygem(ffi)
 BuildRequires: rubygem(rspec) >= 3
 BuildArch: noarch
+# posix_spaw is not implemented everywhere, use just Intel for build.
 ExclusiveArch: %{ix86} x86_64 noarch
 
 %description
