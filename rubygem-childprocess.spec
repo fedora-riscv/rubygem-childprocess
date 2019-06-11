@@ -2,7 +2,7 @@
 
 Name: rubygem-%{gem_name}
 Version: 1.0.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A gem for controlling external programs running in the background
 License: MIT
 URL: http://github.com/enkessler/childprocess
@@ -37,6 +37,7 @@ Documentation for %{name}.
 
 # Disable windows specific installation of FFI gem.
 sed -i "/extensions/ s/^/#/" ../%{gem_name}-%{version}.gemspec
+%gemspec_remove_dep -g rake '< 13.0'
 %gemspec_remove_file "ext/mkrf_conf.rb"
 
 %build
@@ -89,6 +90,9 @@ popd
 %{gem_instdir}/spec
 
 %changelog
+* Tue Jun 11 2019 Vít Ondruch <vondruch@redhat.com> - 1.0.1-3
+- Remove unnecessary Rake dependency.
+
 * Fri Jun 07 2019 Vít Ondruch <vondruch@redhat.com> - 1.0.1-2
 - posix_spaw is not implemented everywhere, use just Intel for build.
 
