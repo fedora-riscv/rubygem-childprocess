@@ -1,15 +1,12 @@
 %global gem_name childprocess
 
 Name: rubygem-%{gem_name}
-Version: 1.0.1
-Release: 8%{?dist}
+Version: 4.1.0
+Release: 1%{?dist}
 Summary: A gem for controlling external programs running in the background
 License: MIT
 URL: http://github.com/enkessler/childprocess
 Source0: https://rubygems.org/gems/%{gem_name}-%{version}.gem
-# Fix Ruby 2.6 compatibility.
-# https://github.com/enkessler/childprocess/pull/149
-Patch0: rubygem-childprocess-1.0.1-Rewrite-unix-fork-reopen-to-be-compatible-with-ruby-2.6.patch
 BuildRequires: ruby(release)
 BuildRequires: rubygems-devel
 BuildRequires: rubygem(ffi)
@@ -34,19 +31,8 @@ Documentation for %{name}.
 %prep
 %setup -q -n %{gem_name}-%{version}
 
-%patch0 -p1
-
-# Disable windows specific installation of FFI gem.
-sed -i "/extensions/ s/^/#/" ../%{gem_name}-%{version}.gemspec
-%gemspec_remove_dep -g rake '< 13.0'
-%gemspec_remove_file "ext/mkrf_conf.rb"
-
 %build
-# Create the gem as gem install only works on a gem file
 gem build ../%{gem_name}-%{version}.gemspec
-
-# %%gem_install compiles any C extensions and installs the gem into ./%%gem_dir
-# by default, so that we can move it into the buildroot in %%install
 %gem_install
 
 %install
@@ -66,6 +52,11 @@ sed -i "/gemspec.validate/ s/^/#/" spec/childprocess_spec.rb
 # We need Unicode support to pass "ChildProcess allows unicode characters
 # in the environment" test case.
 LC_ALL=C.UTF-8 RUBYOPT=-Ilib rspec spec
+
+# Disable test failing for posix-spawn
+# https://github.com/enkessler/childprocess/issues/173
+sed -i '/^\s*it "can write to stdin interactively if duplex = true" do$/ a \
+  skip' spec/io_spec.rb
 
 # Test also posix_spawn, which requires FFI.
 CHILDPROCESS_POSIX_SPAWN=true LC_ALL=C.UTF-8 RUBYOPT=-Ilib rspec spec
@@ -91,6 +82,10 @@ popd
 %{gem_instdir}/spec
 
 %changelog
+* Fri Sep 17 2021 Pavel Valena <pvalena@redhat.com> - 4.1.0-1
+- Update to childprocess 4.1.0.
+  Resolves: rhbz#1733782
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.0.1-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
