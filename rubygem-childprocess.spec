@@ -2,7 +2,7 @@
 
 Name: rubygem-%{gem_name}
 Version: 1.0.1
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A gem for controlling external programs running in the background
 License: MIT
 URL: http://github.com/enkessler/childprocess
@@ -91,6 +91,9 @@ popd
 %{gem_instdir}/spec
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.0.1-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.0.1-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
